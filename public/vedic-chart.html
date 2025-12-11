@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North Indian Vedic Astrology Chart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+        }
+        
+        h1 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: inline-block;
+        }
+        
+        svg {
+            display: block;
+        }
+        
+        .house-number {
+            fill: #999;
+            font-size: 9px;
+            font-weight: normal;
+        }
+        
+        .sign-number {
+            fill: black;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .asc-label {
+            fill: #d97706;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .planet {
+            fill: #0369a1;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .planet:hover {
+            fill: #0284c7;
+            font-weight: bold;
+        }
+        
+        .legend {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 800px;
+        }
+        
+        .legend h2 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .legend-section h3 {
+            color: #374151;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.9rem;
+        }
+        
+        .legend-label {
+            color: #6b7280;
+        }
+        
+        .legend-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        @media (max-width: 768px) {
+            .legend-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>North Indian Vedic Astrology Chart</h1>
+        <p class="subtitle">Ascendant: Sagittarius (Sign 9) • Counter-Clockwise Layout</p>
+        
+        <div class="chart-container">
+            <svg viewBox="0 0 400 400" width="600" height="600">
+                <!-- Outer square -->
+                <rect x="10" y="10" width="380" height="380" fill="white" stroke="black" stroke-width="2.5"/>
+                
+                <!-- Diagonal lines forming the diamond -->
+                <line x1="10" y1="10" x2="390" y2="390" stroke="black" stroke-width="2.5"/>
+                <line x1="390" y1="10" x2="10" y2="390" stroke="black" stroke-width="2.5"/>
+                
+                <!-- Horizontal and vertical center lines -->
+                <line x1="200" y1="10" x2="200" y2="390" stroke="black" stroke-width="2.5"/>
+                <line x1="10" y1="200" x2="390" y2="200" stroke="black" stroke-width="2.5"/>
+
+                <!-- House 1: Sign 9 (Sagittarius - Ascendant) -->
+                <text x="175" y="72" class="house-number">H1</text>
+                <text x="200" y="82" text-anchor="middle" class="sign-number">9</text>
+                <text x="200" y="98" text-anchor="middle" class="asc-label">ASC</text>
+                <text x="200" y="115" text-anchor="middle" class="planet">Su 4°19'</text>
+                
+                <!-- House 2: Sign 10 (Capricorn) -->
+                <text x="85" y="72" class="house-number">H2</text>
+                <text x="110" y="82" text-anchor="middle" class="sign-number">10</text>
+                <text x="110" y="102" text-anchor="middle" class="planet">Ma 14°0'</text>
+                <text x="110" y="116" text-anchor="middle" class="planet">Ke 2°45'</text>
+                
+                <!-- House 3: Sign 11 (Aquarius) -->
+                <text x="45" y="132" class="house-number">H3</text>
+                <text x="70" y="142" text-anchor="middle" class="sign-number">11</text>
+                <text x="70" y="162" text-anchor="middle" class="planet">Ju 28°39'</text>
+                
+                <!-- House 4: Sign 12 (Pisces) -->
+                <text x="45" y="192" class="house-number">H4</text>
+                <text x="70" y="202" text-anchor="middle" class="sign-number">12</text>
+                
+                <!-- House 5: Sign 1 (Aries) -->
+                <text x="45" y="252" class="house-number">H5</text>
+                <text x="70" y="262" text-anchor="middle" class="sign-number">1</text>
+                
+                <!-- House 6: Sign 2 (Taurus) -->
+                <text x="85" y="312" class="house-number">H6</text>
+                <text x="110" y="322" text-anchor="middle" class="sign-number">2</text>
+                
+                <!-- House 7: Sign 3 (Gemini) -->
+                <text x="175" y="312" class="house-number">H7</text>
+                <text x="200" y="322" text-anchor="middle" class="sign-number">3</text>
+                
+                <!-- House 8: Sign 4 (Cancer) -->
+                <text x="265" y="312" class="house-number">H8</text>
+                <text x="290" y="322" text-anchor="middle" class="sign-number">4</text>
+                <text x="290" y="342" text-anchor="middle" class="planet">Ra 2°45'</text>
+                
+                <!-- House 9: Sign 5 (Leo) -->
+                <text x="305" y="252" class="house-number">H9</text>
+                <text x="330" y="262" text-anchor="middle" class="sign-number">5</text>
+                
+                <!-- House 10: Sign 6 (Virgo) -->
+                <text x="305" y="192" class="house-number">H10</text>
+                <text x="330" y="202" text-anchor="middle" class="sign-number">6</text>
+                <text x="330" y="222" text-anchor="middle" class="planet">Me 14°28'</text>
+                
+                <!-- House 11: Sign 7 (Libra) -->
+                <text x="305" y="132" class="house-number">H11</text>
+                <text x="330" y="142" text-anchor="middle" class="sign-number">7</text>
+                <text x="330" y="162" text-anchor="middle" class="planet">Ve 22°10'</text>
+                <text x="330" y="176" text-anchor="middle" class="planet">Sa 21°27'</text>
+                
+                <!-- House 12: Sign 8 (Scorpio) -->
+                <text x="265" y="72" class="house-number">H12</text>
+                <text x="290" y="82" text-anchor="middle" class="sign-number">8</text>
+                <text x="290" y="102" text-anchor="middle" class="planet">Mo 8°8'</text>
+            </svg>
+        </div>
+        
+        <div class="legend">
+            <h2>Chart Details</h2>
+            <div class="legend-grid">
+                <!-- Houses and Signs -->
+                <div class="legend-section">
+                    <h3>Houses → Signs (Counter-Clockwise)</h3>
+                    <div class="legend-item">
+                        <span class="legend-label">House 1:</span>
+                        <span class="legend-value">Sign 9 (Sagittarius)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 2:</span>
+                        <span class="legend-value">Sign 10 (Capricorn)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 3:</span>
+                        <span class="legend-value">Sign 11 (Aquarius)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 4:</span>
+                        <span class="legend-value">Sign 12 (Pisces)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 5:</span>
+                        <span class="legend-value">Sign 1 (Aries)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 6:</span>
+                        <span class="legend-value">Sign 2 (Taurus)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 7:</span>
+                        <span class="legend-value">Sign 3 (Gemini)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 8:</span>
+                        <span class="legend-value">Sign 4 (Cancer)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 9:</span>
+                        <span class="legend-value">Sign 5 (Leo)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 10:</span>
+                        <span class="legend-value">Sign 6 (Virgo)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 11:</span>
+                        <span class="legend-value">Sign 7 (Libra)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">House 12:</span>
+                        <span class="legend-value">Sign 8 (Scorpio)</span>
+                    </div>
+                </div>
+                
+                <!-- Planets -->
+                <div class="legend-section">
+                    <h3>Planetary Positions</h3>
+                    <div class="legend-item">
+                        <span class="legend-label">Sun (Su):</span>
+                        <span class="legend-value">4°19' in Sagittarius (9)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Moon (Mo):</span>
+                        <span class="legend-value">8°8' in Scorpio (8)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Mars (Ma):</span>
+                        <span class="legend-value">14°0' in Capricorn (10)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Mercury (Me):</span>
+                        <span class="legend-value">14°28' in Virgo (6)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Jupiter (Ju):</span>
+                        <span class="legend-value">28°39' in Aquarius (11)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Venus (Ve):</span>
+                        <span class="legend-value">22°10' in Libra (7)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Saturn (Sa):</span>
+                        <span class="legend-value">21°27' in Libra (7)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Rahu (Ra):</span>
+                        <span class="legend-value">2°45' in Cancer (4)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">Ketu (Ke):</span>
+                        <span class="legend-value">2°45' in Capricorn (10)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

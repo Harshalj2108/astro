@@ -61,32 +61,45 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
   const renderNorthIndianChart = () => {
     const ascendantRashi = chartData.Ascendant.rashiNumber
 
-    // Fixed house coordinates matching Python D1.py logic
-    // These represent the 12 sections in the North Indian diamond chart
-    const fixedCoords = [
-      { x: 200, y: 70 },   // Position 1 (center top)
-      { x: 290, y: 70 },   // Position 2 (top right)
-      { x: 330, y: 110 },  // Position 3 (right top)
-      { x: 330, y: 200 },  // Position 4 (right center)
-      { x: 330, y: 290 },  // Position 5 (right bottom)
-      { x: 290, y: 330 },  // Position 6 (bottom right)
-      { x: 200, y: 330 },  // Position 7 (center bottom)
-      { x: 110, y: 330 },  // Position 8 (bottom left)
-      { x: 70, y: 290 },   // Position 9 (left bottom)
-      { x: 70, y: 200 },   // Position 10 (left center)
-      { x: 70, y: 110 },   // Position 11 (left top)
-      { x: 110, y: 70 },   // Position 12 (top left)
+    // North Indian Chart Layout (Counter-Clockwise from House 1 at top center)
+    // Fixed positions for the 12 houses in the diamond layout
+    const housePositions = [
+      { x: 200, y: 80, name: '1' },    // House 1 - Top center (Lagna)
+      { x: 110, y: 80, name: '2' },    // House 2 - Top left
+      { x: 70, y: 140, name: '3' },    // House 3 - Left top
+      { x: 70, y: 200, name: '4' },    // House 4 - Left center
+      { x: 70, y: 260, name: '5' },    // House 5 - Left bottom
+      { x: 110, y: 320, name: '6' },   // House 6 - Bottom left
+      { x: 200, y: 320, name: '7' },   // House 7 - Bottom center
+      { x: 290, y: 320, name: '8' },   // House 8 - Bottom right
+      { x: 330, y: 260, name: '9' },   // House 9 - Right bottom
+      { x: 330, y: 200, name: '10' },  // House 10 - Right center
+      { x: 330, y: 140, name: '11' },  // House 11 - Right top
+      { x: 290, y: 80, name: '12' },   // House 12 - Top right
     ]
 
-    // Calculate rotation based on Ascendant (following D1.py logic)
-    // index = 12 - house1 + 1
-    const rotationIndex = (12 - ascendantRashi + 1) % 12
+    // Calculate which sign (rashi) is in each house
+    // House 1 contains the Ascendant sign, then counter-clockwise
+    const getSignInHouse = (houseNum: number) => {
+      return ((ascendantRashi + houseNum - 2) % 12) + 1
+    }
 
-    // Reorder coordinates: coords[index:] + coords[:index]
-    const reorderedCoords = [
-      ...fixedCoords.slice(rotationIndex),
-      ...fixedCoords.slice(0, rotationIndex)
-    ]
+    // Group planets by their sign (rashi)
+    const planetsBySign: { [key: number]: Array<{ name: string, degree: number, minute: number }> } = {}
+    
+    for (let i = 1; i <= 12; i++) {
+      planetsBySign[i] = []
+    }
+
+    const planets = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Rahu', 'Ketu']
+    planets.forEach(planet => {
+      const planetData = chartData[planet as keyof BirthChartData] as any
+      const sign = planetData.rashiNumber
+      const deg = Math.floor(planetData.degreeInRashi)
+      const min = Math.floor((planetData.degreeInRashi - deg) * 60)
+      
+      planetsBySign[sign].push({ name: planet, degree: deg, minute: min })
+    })
 
     return (
       <div className="relative w-full max-w-md mx-auto aspect-square">
@@ -103,61 +116,72 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
           <line x1="200" y1="10" x2="200" y2="390" stroke="black" strokeWidth="2" />
           <line x1="10" y1="200" x2="390" y2="200" stroke="black" strokeWidth="2" />
 
-          {/* House numbers and planets - Rendered using reordered coordinates */}
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((houseNum) => {
-            const coord = reorderedCoords[houseNum - 1]
-            const planetsInHouse = houses[houseNum]
+          {/* Render each house with sign number and planets */}
+          {housePositions.map((house, index) => {
+            const houseNum = index + 1
+            const signInHouse = getSignInHouse(houseNum)
+            const planetsInSign = planetsBySign[signInHouse]
             
             return (
               <g key={houseNum}>
-                {/* House number */}
+                {/* House number (small) */}
                 <text 
-                  x={coord.x} 
-                  y={coord.y} 
+                  x={house.x - 20} 
+                  y={house.y - 10} 
+                  textAnchor="middle" 
+                  fill="gray" 
+                  fontSize="10" 
+                  fontWeight="normal"
+                  fontFamily="Arial, sans-serif"
+                >
+                  H{houseNum}
+                </text>
+                
+                {/* Sign number (large, bold) */}
+                <text 
+                  x={house.x} 
+                  y={house.y} 
                   textAnchor="middle" 
                   fill="black" 
-                  fontSize="16" 
+                  fontSize="18" 
                   fontWeight="bold"
                   fontFamily="Arial, sans-serif"
                 >
-                  {houseNum}
+                  {signInHouse}
                 </text>
                 
                 {/* ASC label for house 1 */}
                 {houseNum === 1 && (
                   <text 
-                    x={coord.x} 
-                    y={coord.y + 15} 
+                    x={house.x} 
+                    y={house.y + 16} 
                     textAnchor="middle" 
                     fill="black" 
                     fontSize="10"
+                    fontWeight="bold"
                     fontFamily="Arial, sans-serif"
                   >
                     ASC
                   </text>
                 )}
                 
-                {/* Planets in this house */}
-                {planetsInHouse.map((planet, i) => {
-                  const planetData = chartData[planet as keyof BirthChartData] as any
-                  const deg = Math.floor(planetData.degreeInRashi)
-                  const min = Math.floor((planetData.degreeInRashi - deg) * 60)
-                  
+                {/* Planets in this sign */}
+                {planetsInSign.map((planet, i) => {
                   return (
                     <text
-                      key={planet}
-                      x={coord.x}
-                      y={coord.y + (houseNum === 1 ? 30 : 20) + i * 16}
+                      key={planet.name}
+                      x={house.x}
+                      y={house.y + (houseNum === 1 ? 32 : 20) + i * 15}
                       textAnchor="middle"
                       fill="black"
-                      fontSize="11"
+                      fontSize="10"
                       fontWeight="500"
                       fontFamily="Arial, sans-serif"
                       className="cursor-pointer hover:font-bold"
-                      onClick={() => setSelectedPlanet(planet)}
+                      onClick={() => setSelectedPlanet(planet.name)}
                       style={{ transition: 'all 0.2s' }}
                     >
-                      {getShortName(planet)} {deg}°{min}'
+                      {getShortName(planet.name)} {planet.degree}°{planet.minute}'
                     </text>
                   )
                 })}
