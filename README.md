@@ -1,6 +1,17 @@
 # Celestial Journey - Astrology Website
 
-A modern astrology website with user authentication, birth chart storage, and Google OAuth login built with Next.js 15, Tailwind CSS, and Supabase.
+A modern astrology website with user authentication, birth chart storage, and **NASA JPL-powered planetary calculations** built with Next.js 15, Tailwind CSS, and Supabase.
+
+## ✨ New: JPL Ephemeris Integration
+
+This app now uses **NASA JPL Horizons** for planetary positions, providing research-grade accuracy for Vedic astrology birth charts. See [JPL_EPHEMERIS_README.md](./JPL_EPHEMERIS_README.md) for details.
+
+**Features:**
+- 🎯 JPL-quality planetary positions (±0.001° accuracy)
+- 🔄 Automatic fallback system (Horizons → SPICE → Swiss Ephemeris)
+- ⚡ Built-in caching and rate limiting
+- 🏠 Multiple house systems (Whole Sign, Equal, Placidus, Sripati)
+- 📡 Optional offline mode with SPICE kernels
 
 ## 🚀 Quick Start
 

@@ -51,8 +51,8 @@ export async function POST(request: NextRequest) {
     const latitude = 28.6139 // Default to Delhi for now
     const longitude = 77.2090
 
-    // Calculate birth chart
-    const chartData = calculateBirthChart(dateTime, latitude, longitude)
+    // Calculate birth chart (now using JPL Horizons)
+    const chartData = await calculateBirthChart(dateTime, latitude, longitude)
     const housePlacements = getHousePlacements(chartData)
 
     // Prepare chart data for storage
