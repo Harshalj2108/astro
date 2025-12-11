@@ -21,18 +21,18 @@ export default function StandaloneChart() {
 
   // North Indian Chart Layout (Counter-Clockwise from House 1 at top center)
   const housePositions = [
-    { x: 200, y: 80, name: '1' },    // House 1 - Top center (Lagna)
-    { x: 110, y: 80, name: '2' },    // House 2 - Top left
-    { x: 70, y: 140, name: '3' },    // House 3 - Left top
-    { x: 70, y: 200, name: '4' },    // House 4 - Left center
-    { x: 70, y: 260, name: '5' },    // House 5 - Left bottom
-    { x: 110, y: 320, name: '6' },   // House 6 - Bottom left
-    { x: 200, y: 320, name: '7' },   // House 7 - Bottom center
-    { x: 290, y: 320, name: '8' },   // House 8 - Bottom right
-    { x: 330, y: 260, name: '9' },   // House 9 - Right bottom
-    { x: 330, y: 200, name: '10' },  // House 10 - Right center
-    { x: 330, y: 140, name: '11' },  // House 11 - Right top
-    { x: 290, y: 80, name: '12' },   // House 12 - Top right
+    { x: 200, y: 110, name: '1' },    // House 1 - Top center (Lagna)
+    { x: 100, y: 65, name: '2' },     // House 2 - Top left
+    { x: 45, y: 120, name: '3' },     // House 3 - Left top
+    { x: 100, y: 210, name: '4' },    // House 4 - Left center
+    { x: 45, y: 310, name: '5' },     // House 5 - Left bottom
+    { x: 100, y: 350, name: '6' },    // House 6 - Bottom left
+    { x: 200, y: 310, name: '7' },    // House 7 - Bottom center
+    { x: 300, y: 350, name: '8' },    // House 8 - Bottom right
+    { x: 350, y: 310, name: '9' },    // House 9 - Right bottom
+    { x: 300, y: 210, name: '10' },   // House 10 - Right center
+    { x: 350, y: 120, name: '11' },   // House 11 - Right top
+    { x: 295, y: 65, name: '12' },    // House 12 - Top right
   ]
 
   // Planet data with sign positions
