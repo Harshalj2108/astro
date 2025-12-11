@@ -19,11 +19,11 @@ create table birth_details (
   user_id uuid references auth.users on delete cascade not null,
   full_name text not null,
   date_of_birth date not null,
-  time_of_birth time not null,
+  time_of_birth time, -- Can be null if time unknown
   place_of_birth text not null,
-  latitude decimal(10, 8),
-  longitude decimal(11, 8),
-  timezone text,
+  latitude decimal(10, 8), -- Geographic latitude for chart calculations
+  longitude decimal(11, 8), -- Geographic longitude for chart calculations
+  timezone text, -- IANA timezone (e.g., 'Asia/Kolkata')
   is_owner boolean default false not null, -- true if this is the account owner's birth details
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
@@ -33,11 +33,31 @@ create table birth_details (
 create table astrology_charts (
   id uuid default uuid_generate_v4() primary key,
   user_id uuid references auth.users on delete cascade not null,
-  birth_detail_id uuid references birth_details on delete cascade not null,
-  chart_type text not null, -- e.g., 'natal', 'transit', 'composite'
-  chart_data jsonb not null, -- store all chart calculations
-  chart_name text,
+  birth_details_id uuid references birth_details on delete cascade not null,
+  chart_name text not null,
+  chart_type text not null default 'D1', -- D1, D9, D10, D12, D16, D20, D24, D27, D30, D60
+  chart_data jsonb not null, -- Complete astrological calculation data
+  -- Chart data structure:
+  -- {
+  --   "Sun": { "longitude": 51.25, "rashiNumber": 2, "rashiName": "Taurus", "rashiSanskrit": "Vrishabha", 
+  --            "degreeInRashi": 21.25, "nakshatraNumber": 4, "nakshatraName": "Rohini", "formatted": "Taurus 21° 15'" },
+  --   "Moon": { ... },
+  --   "Mercury": { ... },
+  --   "Venus": { ... },
+  --   "Mars": { ... },
+  --   "Jupiter": { ... },
+  --   "Saturn": { ... },
+  --   "Rahu": { ... },
+  --   "Ketu": { ... },
+  --   "Ascendant": { ... },
+  --   "housePlacements": { "Sun": 9, "Moon": 11, ... },
+  --   "birthDetails": { "name": "...", "dateOfBirth": "...", "timeOfBirth": "...", 
+  --                     "placeOfBirth": "...", "latitude": 28.61, "longitude": 77.20 },
+  --   "ayanamsa": 24.15,
+  --   "calculatedAt": "2025-12-11T10:30:00.000Z"
+  -- }
   notes text,
+  is_favorite boolean default false,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
@@ -45,8 +65,11 @@ create table astrology_charts (
 -- Create indexes for better performance
 create index on profiles (id);
 create index on birth_details (user_id);
+create index on birth_details (is_owner);
 create index on astrology_charts (user_id);
-create index on astrology_charts (birth_detail_id);
+create index on astrology_charts (birth_details_id);
+create index on astrology_charts (chart_type);
+create index on astrology_charts (created_at desc);
 
 -- Enable Row Level Security (RLS)
 alter table profiles enable row level security;
