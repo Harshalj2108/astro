@@ -126,26 +126,13 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
             
             return (
               <g key={houseNum}>
-                {/* House number (small) */}
-                <text 
-                  x={house.x - 20} 
-                  y={house.y - 10} 
-                  textAnchor="middle" 
-                  fill="gray" 
-                  fontSize="10" 
-                  fontWeight="normal"
-                  fontFamily="Arial, sans-serif"
-                >
-                  H{houseNum}
-                </text>
-                
-                {/* Sign number (large, bold) */}
+                {/* Rashi number in center (large, bold) */}
                 <text 
                   x={house.x} 
-                  y={house.y} 
+                  y={house.y + 5} 
                   textAnchor="middle" 
                   fill="black" 
-                  fontSize="18" 
+                  fontSize="20" 
                   fontWeight="bold"
                   fontFamily="Arial, sans-serif"
                 >
@@ -156,10 +143,10 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
                 {houseNum === 1 && (
                   <text 
                     x={house.x} 
-                    y={house.y + 16} 
+                    y={house.y + 20} 
                     textAnchor="middle" 
-                    fill="black" 
-                    fontSize="10"
+                    fill="#d97706" 
+                    fontSize="9"
                     fontWeight="bold"
                     fontFamily="Arial, sans-serif"
                   >
@@ -167,23 +154,32 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
                   </text>
                 )}
                 
-                {/* Planets in this sign */}
+                {/* Planets arranged around the rashi number */}
                 {planetsInSign.map((planet, i) => {
+                  // Position planets in a circle around the center
+                  const numPlanets = planetsInSign.length
+                  const radius = 30
+                  const angleStep = (2 * Math.PI) / Math.max(numPlanets, 4)
+                  const angle = i * angleStep - Math.PI / 2 // Start from top
+                  
+                  const planetX = house.x + radius * Math.cos(angle)
+                  const planetY = house.y + radius * Math.sin(angle)
+                  
                   return (
                     <text
                       key={planet.name}
-                      x={house.x}
-                      y={house.y + (houseNum === 1 ? 32 : 20) + i * 15}
+                      x={planetX}
+                      y={planetY + 4}
                       textAnchor="middle"
-                      fill="black"
-                      fontSize="10"
-                      fontWeight="500"
+                      fill="#0369a1"
+                      fontSize="11"
+                      fontWeight="600"
                       fontFamily="Arial, sans-serif"
                       className="cursor-pointer hover:font-bold"
                       onClick={() => setSelectedPlanet(planet.name)}
                       style={{ transition: 'all 0.2s' }}
                     >
-                      {getShortName(planet.name)} {planet.degree}°{planet.minute}'
+                      {getShortName(planet.name)}
                     </text>
                   )
                 })}

@@ -103,23 +103,10 @@ export default function StandaloneChart() {
             
             return (
               <g key={houseNum}>
-                {/* House number (small, top-left corner) */}
-                <text 
-                  x={house.x - 25} 
-                  y={house.y - 8} 
-                  textAnchor="middle" 
-                  fill="#666" 
-                  fontSize="9" 
-                  fontWeight="normal"
-                  fontFamily="Arial, sans-serif"
-                >
-                  H{houseNum}
-                </text>
-                
-                {/* Sign number (large, bold) */}
+                {/* Rashi number in center (large, bold) */}
                 <text 
                   x={house.x} 
-                  y={house.y + 2} 
+                  y={house.y + 5} 
                   textAnchor="middle" 
                   fill="black" 
                   fontSize="20" 
@@ -133,10 +120,10 @@ export default function StandaloneChart() {
                 {houseNum === 1 && (
                   <text 
                     x={house.x} 
-                    y={house.y + 18} 
+                    y={house.y + 20} 
                     textAnchor="middle" 
                     fill="#d97706" 
-                    fontSize="11"
+                    fontSize="9"
                     fontWeight="bold"
                     fontFamily="Arial, sans-serif"
                   >
@@ -144,21 +131,32 @@ export default function StandaloneChart() {
                   </text>
                 )}
                 
-                {/* Planets in this sign */}
-                {planetsInSign.map((planet, i) => (
-                  <text
-                    key={planet.name}
-                    x={house.x}
-                    y={house.y + (houseNum === 1 ? 35 : 22) + i * 14}
-                    textAnchor="middle"
-                    fill="#0369a1"
-                    fontSize="10"
-                    fontWeight="600"
-                    fontFamily="Arial, sans-serif"
-                  >
-                    {planet.name} {planet.degree}°{planet.minute}'
-                  </text>
-                ))}
+                {/* Planets arranged around the rashi number */}
+                {planetsInSign.map((planet, i) => {
+                  // Position planets in a circle around the center
+                  const numPlanets = planetsInSign.length
+                  const radius = 30
+                  const angleStep = (2 * Math.PI) / Math.max(numPlanets, 4)
+                  const angle = i * angleStep - Math.PI / 2 // Start from top
+                  
+                  const planetX = house.x + radius * Math.cos(angle)
+                  const planetY = house.y + radius * Math.sin(angle)
+                  
+                  return (
+                    <text
+                      key={planet.name}
+                      x={planetX}
+                      y={planetY + 4}
+                      textAnchor="middle"
+                      fill="#0369a1"
+                      fontSize="11"
+                      fontWeight="600"
+                      fontFamily="Arial, sans-serif"
+                    >
+                      {planet.name}
+                    </text>
+                  )
+                })}
               </g>
             )
           })}
