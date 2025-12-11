@@ -343,7 +343,7 @@ export default function DashboardClient({
                     className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex-1 cursor-pointer">
+                      <Link href={`/charts/${chart.id}`} className="flex-1 cursor-pointer">
                         <h3 className="font-medium text-white">{chart.chart_name || 'Untitled Chart'}</h3>
                         <div className="flex items-center gap-4 mt-2 text-sm text-purple-200/60">
                           <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-xs">
@@ -351,7 +351,7 @@ export default function DashboardClient({
                           </span>
                           <span>{new Date(chart.created_at).toLocaleDateString()}</span>
                         </div>
-                      </div>
+                      </Link>
                       <button
                         onClick={() => setDeleteConfirm({ type: 'chart', id: chart.id })}
                         className="p-2 rounded-lg text-red-400 hover:bg-white/10 transition-colors"

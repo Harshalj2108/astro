@@ -87,11 +87,6 @@ export default function CreateChartPage() {
 
       setGeneratedChart(data.chartData)
       
-      // Optionally redirect to dashboard after a delay
-      setTimeout(() => {
-        router.push('/dashboard')
-      }, 5000)
-      
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate chart')
     } finally {
@@ -239,7 +234,7 @@ export default function CreateChartPage() {
           /* Generated Chart Display */
           <div className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-2xl p-8 border border-white/20">
             <div className="mb-6 p-3 rounded-lg bg-green-500/20 border border-green-500/50 text-green-200 text-sm text-center">
-              ✓ Chart generated successfully! Redirecting to dashboard...
+              ✓ Chart generated successfully!
             </div>
             
             <ChartVisualization chartData={generatedChart} />
