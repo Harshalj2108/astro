@@ -125,6 +125,25 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
             const signInHouse = getSignInHouse(houseNum)
             const planetsInSign = planetsBySign[signInHouse]
             
+            // Define polygon points for each house based on diamond structure
+            const getHousePolygon = (num: number): string => {
+              const polygons: { [key: number]: string } = {
+                1: "200,10 290,100 200,190 110,100",           // Top center triangle
+                2: "110,100 200,10 10,10 100,100",            // Top left triangle
+                3: "10,10 100,100 10,190 10,10",              // Left top small
+                4: "10,190 100,100 100,200 10,200",           // Left center rectangle
+                5: "10,200 100,200 10,390 10,200",            // Left bottom small
+                6: "10,390 100,300 200,390 100,390",          // Bottom left triangle
+                7: "100,300 200,390 290,300 200,210",         // Bottom center diamond
+                8: "200,390 290,300 390,390 290,390",         // Bottom right triangle
+                9: "290,300 390,200 390,390 290,390",         // Right bottom small
+                10: "290,200 390,200 290,300 290,200",        // Right center rectangle
+                11: "290,100 390,10 390,200 290,200",         // Right top small
+                12: "200,10 290,100 390,10 290,10",           // Top right triangle
+              }
+              return polygons[num] || ""
+            }
+            
             return (
               <g 
                 key={houseNum}
@@ -132,15 +151,14 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
                 style={{ transition: 'all 0.3s' }}
                 onClick={() => setSelectedHouse(houseNum)}
               >
-                {/* Invisible hover area for the entire house */}
-                <rect
-                  x={house.x - 40}
-                  y={house.y - 40}
-                  width="80"
-                  height="80"
-                  fill={selectedHouse === houseNum ? "#f3e8ff" : "transparent"}
-                  className="hover:fill-purple-50"
+                {/* House polygon that matches exact boundaries */}
+                <polygon
+                  points={getHousePolygon(houseNum)}
+                  fill={selectedHouse === houseNum ? "rgba(216, 180, 254, 0.3)" : "transparent"}
+                  className="hover:fill-purple-100"
                   style={{ transition: 'all 0.3s' }}
+                  stroke="transparent"
+                  strokeWidth="0"
                 />
                 
                 {/* Rashi number in center (large, bold) */}
