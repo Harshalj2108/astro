@@ -9,6 +9,7 @@ interface ChartVisualizationProps {
 
 export default function ChartVisualization({ chartData }: ChartVisualizationProps) {
   const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
+  const [selectedHouse, setSelectedHouse] = useState<number | null>(null)
 
   // Calculate which planets are in which houses
   const getHouseContents = () => {
@@ -125,7 +126,23 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
             const planetsInSign = planetsBySign[signInHouse]
             
             return (
-              <g key={houseNum}>
+              <g 
+                key={houseNum}
+                className="cursor-pointer"
+                style={{ transition: 'all 0.3s' }}
+                onClick={() => setSelectedHouse(houseNum)}
+              >
+                {/* Invisible hover area for the entire house */}
+                <rect
+                  x={house.x - 40}
+                  y={house.y - 40}
+                  width="80"
+                  height="80"
+                  fill={selectedHouse === houseNum ? "#f3e8ff" : "transparent"}
+                  className="hover:fill-purple-50"
+                  style={{ transition: 'all 0.3s' }}
+                />
+                
                 {/* Rashi number in center (large, bold) */}
                 <text 
                   x={house.x} 
@@ -135,6 +152,7 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
                   fontSize="20" 
                   fontWeight="bold"
                   fontFamily="Arial, sans-serif"
+                  className="pointer-events-none"
                 >
                   {signInHouse}
                 </text>
@@ -149,6 +167,7 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
                     fontSize="9"
                     fontWeight="bold"
                     fontFamily="Arial, sans-serif"
+                    className="pointer-events-none"
                   >
                     ASC
                   </text>
@@ -175,8 +194,11 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
                       fontSize="11"
                       fontWeight="600"
                       fontFamily="Arial, sans-serif"
-                      className="cursor-pointer hover:font-bold"
-                      onClick={() => setSelectedPlanet(planet.name)}
+                      className="cursor-pointer hover:font-bold pointer-events-auto"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedPlanet(planet.name)
+                      }}
                       style={{ transition: 'all 0.2s' }}
                     >
                       {getShortName(planet.name)}
@@ -203,6 +225,49 @@ export default function ChartVisualization({ chartData }: ChartVisualizationProp
       <div className="bg-white rounded-2xl p-8 border-2 border-gray-300 shadow-xl">
         {renderNorthIndianChart()}
       </div>
+
+      {/* House Details */}
+      {selectedHouse && (
+        <div className="backdrop-blur-xl bg-white/10 rounded-xl p-4 border border-white/20">
+          <h4 className="text-lg font-semibold text-white mb-3">House {selectedHouse} Details</h4>
+          {(() => {
+            const ascendantRashi = chartData.Ascendant.rashiNumber
+            const signInHouse = ((ascendantRashi + selectedHouse - 2) % 12) + 1
+            const signName = RASHI_NAMES[signInHouse - 1]
+            
+            // Get planets in this house
+            const planetsInHouse = houses[selectedHouse] || []
+            
+            return (
+              <div className="space-y-3 text-sm">
+                <div>
+                  <span className="text-purple-200/60">Sign:</span>
+                  <span className="text-white ml-2 font-medium">{signName} ({signInHouse})</span>
+                </div>
+                <div>
+                  <span className="text-purple-200/60">Planets:</span>
+                  <span className="text-white ml-2 font-medium">
+                    {planetsInHouse.length > 0 
+                      ? planetsInHouse.map(p => getShortName(p)).join(', ')
+                      : 'Empty'}
+                  </span>
+                </div>
+                {selectedHouse === 1 && (
+                  <div className="text-amber-300 text-xs mt-2">
+                    ⭐ Ascendant (Lagna) - Most important house
+                  </div>
+                )}
+              </div>
+            )
+          })()}
+          <button
+            onClick={() => setSelectedHouse(null)}
+            className="mt-3 text-purple-300 hover:text-white text-sm transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      )}
 
       {/* Planet Details */}
       {selectedPlanet && (
