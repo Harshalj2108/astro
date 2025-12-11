@@ -109,6 +109,27 @@ alter table profiles enable row level security;
 alter table birth_details enable row level security;
 alter table astrology_charts enable row level security;
 
+-- Drop existing policies if they exist and recreate them
+do $$ 
+begin
+  -- Drop and recreate profiles policies
+  drop policy if exists "Users can view their own profile" on profiles;
+  drop policy if exists "Users can insert their own profile" on profiles;
+  drop policy if exists "Users can update their own profile" on profiles;
+  
+  -- Drop and recreate birth_details policies
+  drop policy if exists "Users can view their own birth details" on birth_details;
+  drop policy if exists "Users can insert their own birth details" on birth_details;
+  drop policy if exists "Users can update their own birth details" on birth_details;
+  drop policy if exists "Users can delete their own birth details" on birth_details;
+  
+  -- Drop and recreate astrology_charts policies
+  drop policy if exists "Users can view their own charts" on astrology_charts;
+  drop policy if exists "Users can insert their own charts" on astrology_charts;
+  drop policy if exists "Users can update their own charts" on astrology_charts;
+  drop policy if exists "Users can delete their own charts" on astrology_charts;
+end $$;
+
 -- RLS Policies for profiles
 create policy "Users can view their own profile"
   on profiles for select
