@@ -5,7 +5,7 @@
 create extension if not exists "uuid-ossp";
 
 -- User profiles table (extends Supabase auth.users)
-create table profiles (
+create table if not exists profiles (
   id uuid references auth.users on delete cascade primary key,
   full_name text not null,
   phone_number text,
@@ -14,7 +14,7 @@ create table profiles (
 );
 
 -- Birth details table
-create table birth_details (
+create table if not exists birth_details (
   id uuid default uuid_generate_v4() primary key,
   user_id uuid references auth.users on delete cascade not null,
   full_name text not null,
@@ -30,7 +30,7 @@ create table birth_details (
 );
 
 -- Astrology charts table
-create table astrology_charts (
+create table if not exists astrology_charts (
   id uuid default uuid_generate_v4() primary key,
   user_id uuid references auth.users on delete cascade not null,
   birth_details_id uuid references birth_details on delete cascade not null,
@@ -62,14 +62,47 @@ create table astrology_charts (
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- Create indexes for better performance
-create index on profiles (id);
-create index on birth_details (user_id);
-create index on birth_details (is_owner);
-create index on astrology_charts (user_id);
-create index on astrology_charts (birth_details_id);
-create index on astrology_charts (chart_type);
-create index on astrology_charts (created_at desc);
+-- Add new columns to existing birth_details table if they don't exist
+do $$ 
+begin
+  if not exists (select 1 from information_schema.columns where table_name='birth_details' and column_name='latitude') then
+    alter table birth_details add column latitude decimal(10, 8);
+  end if;
+  
+  if not exists (select 1 from information_schema.columns where table_name='birth_details' and column_name='longitude') then
+    alter table birth_details add column longitude decimal(11, 8);
+  end if;
+  
+  if not exists (select 1 from information_schema.columns where table_name='birth_details' and column_name='timezone') then
+    alter table birth_details add column timezone text;
+  end if;
+  
+  if not exists (select 1 from information_schema.columns where table_name='birth_details' and column_name='is_owner') then
+    alter table birth_details add column is_owner boolean default false not null;
+  end if;
+end $$;
+
+-- Add new columns to existing astrology_charts table if they don't exist
+do $$ 
+begin
+  if not exists (select 1 from information_schema.columns where table_name='astrology_charts' and column_name='is_favorite') then
+    alter table astrology_charts add column is_favorite boolean default false;
+  end if;
+  
+  -- Rename old column if it exists
+  if exists (select 1 from information_schema.columns where table_name='astrology_charts' and column_name='birth_detail_id') then
+    alter table astrology_charts rename column birth_detail_id to birth_details_id;
+  end if;
+end $$;
+
+-- Create indexes for better performance (if not exists)
+create index if not exists profiles_id_idx on profiles (id);
+create index if not exists birth_details_user_id_idx on birth_details (user_id);
+create index if not exists birth_details_is_owner_idx on birth_details (is_owner);
+create index if not exists astrology_charts_user_id_idx on astrology_charts (user_id);
+create index if not exists astrology_charts_birth_details_id_idx on astrology_charts (birth_details_id);
+create index if not exists astrology_charts_chart_type_idx on astrology_charts (chart_type);
+create index if not exists astrology_charts_created_at_idx on astrology_charts (created_at desc);
 
 -- Enable Row Level Security (RLS)
 alter table profiles enable row level security;
