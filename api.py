@@ -18,6 +18,7 @@ The server runs on http://localhost:5000 by default.
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from astrology_calculator import AstrologyCalculator
+from divisional_charts import calculate_divisional_chart, calculate_all_divisional_charts, CHART_NAMES, DIVISIONAL_CHARTS
 from datetime import datetime
 import traceback
 import pytz
@@ -164,12 +165,27 @@ def calculate_chart():
         # Calculate house cusps (12 houses)
         houses = calculate_houses(datetime_str, latitude, longitude)
         
+        # Get requested chart type (default to D1)
+        chart_type = data.get('chartType', 'D1')
+        
+        # Calculate divisional chart if not D1
+        divisional_data = None
+        if chart_type != 'D1' and chart_type in DIVISIONAL_CHARTS:
+            # Prepare positions for divisional calculation
+            all_positions = {**planets}
+            all_positions['Ascendant'] = ascendant_data
+            divisional_data = calculate_divisional_chart(chart_type, 
+                {k: {'longitude': v['longitude']} for k, v in all_positions.items()})
+        
         return jsonify({
             'success': True,
             'data': {
                 'planets': planets,
                 'ascendant': ascendant_data,
                 'houses': houses,
+                'chartType': chart_type,
+                'chartName': CHART_NAMES.get(chart_type, 'Birth Chart'),
+                'divisionalChart': divisional_data,
                 'calculatedAt': datetime.utcnow().isoformat() + 'Z',
                 'inputData': {
                     'date': date_str,
@@ -186,6 +202,114 @@ def calculate_chart():
             'success': False,
             'error': str(e)
         }), 500
+
+
+@app.route('/divisional-charts', methods=['POST'])
+def get_all_divisional_charts():
+    """
+    Calculate all divisional charts (D1-D60) for a birth chart.
+    
+    Request Body:
+    {
+        "date": "2025-05-11",
+        "time": "14:30:00",
+        "latitude": 28.6139,
+        "longitude": 77.2090
+    }
+    
+    Response:
+    {
+        "success": true,
+        "data": {
+            "D1": { "name": "Rashi", "planets": {...} },
+            "D9": { "name": "Navamsa", "planets": {...} },
+            ...
+        }
+    }
+    """
+    if calculator is None:
+        return jsonify({
+            'success': False,
+            'error': 'Ephemeris not initialized.'
+        }), 500
+    
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'Request body is required'
+            }), 400
+        
+        date_str = data.get('date')
+        time_str = data.get('time', '12:00:00')
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
+        
+        if not date_str or latitude is None or longitude is None:
+            return jsonify({
+                'success': False,
+                'error': 'date, latitude, and longitude are required'
+            }), 400
+        
+        latitude = float(latitude)
+        longitude = float(longitude)
+        
+        # Convert local time to UTC
+        local_datetime_str = f"{date_str} {time_str}"
+        try:
+            tz_name = timezone_finder.timezone_at(lat=latitude, lng=longitude)
+            if tz_name:
+                tz = pytz.timezone(tz_name)
+                local_dt = datetime.strptime(local_datetime_str, "%Y-%m-%d %H:%M:%S")
+                local_dt = tz.localize(local_dt)
+                utc_dt = local_dt.astimezone(pytz.UTC)
+                datetime_str = utc_dt.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                datetime_str = local_datetime_str
+        except Exception:
+            datetime_str = local_datetime_str
+        
+        # Get D1 chart positions
+        chart_data = calculator.get_planetary_chart_data(datetime_str, latitude, longitude)
+        
+        # Prepare positions for divisional calculations
+        positions = {}
+        for planet, info in chart_data.items():
+            positions[planet] = {'longitude': info['longitude']}
+        
+        # Calculate all divisional charts
+        all_charts = calculate_all_divisional_charts(positions)
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'charts': all_charts,
+                'availableCharts': list(CHART_NAMES.keys()),
+                'chartNames': CHART_NAMES,
+                'calculatedAt': datetime.utcnow().isoformat() + 'Z'
+            }
+        })
+        
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/chart-types', methods=['GET'])
+def get_chart_types():
+    """Get list of available divisional chart types."""
+    return jsonify({
+        'success': True,
+        'data': {
+            'chartTypes': list(CHART_NAMES.keys()),
+            'chartNames': CHART_NAMES
+        }
+    })
 
 
 def calculate_houses(datetime_str, latitude, longitude):
