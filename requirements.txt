@@ -1,0 +1,14 @@
+# Requirements for Astrology Calculator
+# Install with: pip install -r requirements.txt
+
+swisseph>=2.10.0
+astropy>=5.0
+geopy>=2.3.0
+pytz>=2022.0
+timezonefinder>=6.0.0
+numpy>=1.20.0
+matplotlib>=3.5.0  # For chart plotting functionality
+
+# API Server
+flask>=2.3.0
+flask-cors>=4.0.0
